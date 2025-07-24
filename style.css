@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Open+Sans:wght@400&display=swap');
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #c9caca;
+  color: #f9f9fa;
+  padding: 2em;
+}
+
+#calculator_container {
+  font-family: 'Arial', serif;
+  background: #131C2C;
+  border-radius: 16px;
+  padding: 2.5em;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+  border: 1px solid #E0DDD7;
+  max-width: 640px;
+  margin: auto;
+}
+
+h2 {
+  font-size: 1.8em;
+  margin-bottom: 1em;
+  color: #f4f3f5;
+  text-align: center;
+}
+
+/* Labels */
+label {
+  font-weight: 600;
+  font-family: 'Open Sans';
+  font-size: 1rem;
+  margin-top: 1em;
+  margin-bottom: 0.4em;
+  display: block;
+  color: #f0f0f0;
+}
+
+/* Buttons */
+button {
+  background-color: #131C2C;
+  color: #f0f0f0;
+  border: 1px solid #37FFFF;
+  padding: 0.6em 1.2em;
+  border-radius: 8px;
+  font-weight: bold;
+  margin: 0.4em;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+button.active,
+button:hover {
+  background-color: #3567FD;
+  color: white;
+  border-color: #37FFFF;
+}
+
+#serviceOptions,
+#termButtons {
+  margin-top: 0.8em;
+  margin-bottom: 1.5em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+
+/* Inputs row */
+.inputs-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2em;
+  align-items: flex-start;
+}
+
+.input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  margin-bottom: 0.4em;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.2;
+  color: #f0f0f0;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding-left: 22px;
+  height: 2.4em;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #37FFFF;
+  background-color: #131C2C;
+  color: #ffffff;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.input-wrapper input:focus {
+  border-color: #4cc4fc;
+  background-color: #131C2C;
+  outline: none;
+}
+
+/* Currency Symbol */
+.currency-symbol {
+  position: absolute;
+  left: 10px;
+  top: 51%;
+  transform: translateY(-50%);
+  font-weight: 400;
+  font-size: 1rem;
+  color: #ffffff;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Remove arrows/spinners from number inputs */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* ------------------ */
+/* Result Box Layout  */
+/* ------------------ */
+#resultBox {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2em;
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Section Boxes */
+.summary-section,
+.output-section {
+  flex: 1 1 48%;
+  box-sizing: border-box;
+  padding: 1.2rem;
+  border-radius: 10px;
+  border: 1px solid #37FFFF;
+  background: #1B2437;
+  color: #ffffff;
+}
+
+.summary-section h3,
+.output-section h3 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.output-section {
+  border-left: 1px solid #37FFFF;
+  background: #1B2437;
+}
+
+.summary-section p,
+.output-section p {
+  margin: 0.5em 0;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* Responsive stacking */
+@media (max-width: 768px) {
+  .summary-section,
+  .output-section {
+    flex: 1 1 100%;
+  }
+}
+
+#calculator_container #exampleBox {
+  display: flex;
+  justify-content: center; /* horizontal center */
+  align-items: center;     /* vertical center */
+  flex-direction: column;
+  background-color: #131C2C;
+  color: #fff;
+  padding: 1em 1.5em;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin-top: 1em;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.amortization-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 0.9em;
+}
+
+.amortization-table th,
+.amortization-table td {
+  border: 1px solid #ccc;
+  padding: 6px 8px;
+  text-align: right;
+}
+
+.amortization-table th {
+  background-color: #f0f0f0;
+  text-align: center;
+}
