@@ -2,8 +2,7 @@
 
 body {
   font-family: 'Open Sans', sans-serif;
-  background-color: transparent;
-  color: #f9f9fa;
+  background-color: transparent; !important
   padding: 2em;
 }
 
