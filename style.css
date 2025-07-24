@@ -178,6 +178,10 @@ input[type=number] {
   margin: 0.5em 0;
   font-weight: 500;
   color: #ffffff;
+
+  display: flex;
+  justify-content: space-between;  /* Align text left, values right */
+  align-items: center;
 }
 
 /* Responsive stacking */
