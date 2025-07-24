@@ -54,7 +54,6 @@ function financeCalculator(options) {
         const resultBox = container.querySelector("#resultBox");
         const exampleBox = container.querySelector("#exampleBox");
 
-        // Animate with currency symbol
         function animateCount(element, start, end, duration = 1000, prefix = '£', suffix = '') {
           if (!element) return;
           let startTimestamp = null;
@@ -115,6 +114,13 @@ function financeCalculator(options) {
               <p><strong>Repaid over:</strong> ${selectedTerm} months</p>
               <p><strong>Interest rate:</strong> ${apr.toString()}%</p>
               <p><strong>Representative APR:</strong> ${apr.toString()}% APR</p>
+              ${
+                selectedService === "BNPL" &&
+                Array.isArray(serviceConfig.deferralterms) &&
+                serviceConfig.deferralterms.includes(String(selectedTerm))
+                  ? `<p><strong>Deferral period:</strong> 12 months</p>`
+                  : ""
+              }
             </div>
             <div class="output-section">
               <h3>Monthly & Total Repayments</h3>
@@ -152,12 +158,12 @@ function financeCalculator(options) {
 
           resultBox.innerHTML = summaryHTML;
 
-          animateCount(resultBox.querySelector("#cashPrice"), 0, cashPrice, 1000, '£');
-          animateCount(resultBox.querySelector("#deposit"), 0, deposit, 1000, '£');
-          animateCount(resultBox.querySelector("#loanAmount"), 0, loanAmount, 1000, '£');
-          animateCount(resultBox.querySelector("#interestPayable"), 0, interestPayable, 1000, '£');
-          animateCount(resultBox.querySelector("#totalPayable"), 0, totalPayable, 1000, '£');
-          animateCount(resultBox.querySelector("#monthlyRepayment"), 0, monthlyInstalment, 1000, '£');
+          animateCount(resultBox.querySelector("#cashPrice"), 0, cashPrice);
+          animateCount(resultBox.querySelector("#deposit"), 0, deposit);
+          animateCount(resultBox.querySelector("#loanAmount"), 0, loanAmount);
+          animateCount(resultBox.querySelector("#interestPayable"), 0, interestPayable);
+          animateCount(resultBox.querySelector("#totalPayable"), 0, totalPayable);
+          animateCount(resultBox.querySelector("#monthlyRepayment"), 0, monthlyInstalment);
 
           exampleBox.innerHTML = `
             <strong>Representative Example:</strong><br>
