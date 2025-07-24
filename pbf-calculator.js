@@ -54,14 +54,15 @@ function financeCalculator(options) {
         const resultBox = container.querySelector("#resultBox");
         const exampleBox = container.querySelector("#exampleBox");
 
-        function animateCount(element, start, end, duration = 1000) {
+        // Animate with currency symbol
+        function animateCount(element, start, end, duration = 1000, prefix = '£', suffix = '') {
           if (!element) return;
           let startTimestamp = null;
           const step = (timestamp) => {
             if (!startTimestamp) startTimestamp = timestamp;
             const progress = Math.min((timestamp - startTimestamp) / duration, 1);
             const current = new Decimal(start).plus(new Decimal(end).minus(start).times(progress));
-            element.textContent = current.toDecimalPlaces(2).toString();
+            element.textContent = `${prefix}${current.toDecimalPlaces(2)}${suffix}`;
             if (progress < 1) {
               window.requestAnimationFrame(step);
             }
@@ -103,27 +104,28 @@ function financeCalculator(options) {
           const monthlyRate = apr.div(100).div(12);
           let repaymentMonths, deferralMonths;
 
-          const animatedSpan = (id) => `<span id="${id}">0.00</span>`;
+          const animatedSpan = (id) => `<span id="${id}">£0.00</span>`;
 
           let summaryHTML = `
             <div class="summary-section">
               <h3>Finance Details</h3>
-              <p><strong>Total cost of goods:</strong> £${animatedSpan("cashPrice")}</p>
-              <p><strong>Deposit:</strong> £${animatedSpan("deposit")}</p>
-              <p><strong>Amount borrowed:</strong> £${animatedSpan("loanAmount")}</p>
+              <p><strong>Total cost of goods:</strong> ${animatedSpan("cashPrice")}</p>
+              <p><strong>Deposit:</strong> ${animatedSpan("deposit")}</p>
+              <p><strong>Amount borrowed:</strong> ${animatedSpan("loanAmount")}</p>
               <p><strong>Repaid over:</strong> ${selectedTerm} months</p>
               <p><strong>Interest rate:</strong> ${apr.toString()}%</p>
               <p><strong>Representative APR:</strong> ${apr.toString()}% APR</p>
             </div>
             <div class="output-section">
               <h3>Monthly & Total Repayments</h3>
-              <p><strong>Interest payable:</strong> £${animatedSpan("interestPayable")}</p>
-              <p><strong>Total payable:</strong> £${animatedSpan("totalPayable")}</p>
-              <p><strong>Monthly repayment:</strong> £${animatedSpan("monthlyRepayment")}</p>
+              <p><strong>Interest payable:</strong> ${animatedSpan("interestPayable")}</p>
+              <p><strong>Total payable:</strong> ${animatedSpan("totalPayable")}</p>
+              <p><strong>Monthly repayment:</strong> ${animatedSpan("monthlyRepayment")}</p>
             </div>
           `;
 
           let monthlyInstalment, totalPayable, interestPayable;
+
           if (
             selectedService === "BNPL" &&
             Array.isArray(serviceConfig.deferralterms) &&
@@ -150,12 +152,12 @@ function financeCalculator(options) {
 
           resultBox.innerHTML = summaryHTML;
 
-          animateCount(resultBox.querySelector("#cashPrice"), 0, cashPrice);
-          animateCount(resultBox.querySelector("#deposit"), 0, deposit);
-          animateCount(resultBox.querySelector("#loanAmount"), 0, loanAmount);
-          animateCount(resultBox.querySelector("#interestPayable"), 0, interestPayable);
-          animateCount(resultBox.querySelector("#totalPayable"), 0, totalPayable);
-          animateCount(resultBox.querySelector("#monthlyRepayment"), 0, monthlyInstalment);
+          animateCount(resultBox.querySelector("#cashPrice"), 0, cashPrice, 1000, '£');
+          animateCount(resultBox.querySelector("#deposit"), 0, deposit, 1000, '£');
+          animateCount(resultBox.querySelector("#loanAmount"), 0, loanAmount, 1000, '£');
+          animateCount(resultBox.querySelector("#interestPayable"), 0, interestPayable, 1000, '£');
+          animateCount(resultBox.querySelector("#totalPayable"), 0, totalPayable, 1000, '£');
+          animateCount(resultBox.querySelector("#monthlyRepayment"), 0, monthlyInstalment, 1000, '£');
 
           exampleBox.innerHTML = `
             <strong>Representative Example:</strong><br>
