@@ -2,7 +2,8 @@
 
 body {
   font-family: 'Open Sans', sans-serif;
-  background-color: transparent; !important
+  background-color: #c9caca;
+  color: #f9f9fa;
   padding: 2em;
 }
 
@@ -12,7 +13,7 @@ body {
   border-radius: 16px;
   padding: 2.5em;
   box-shadow: 0 12px 24px rgba(0,0,0,0.05);
-  border: 1px solid #37FFFF;
+  border: 1px solid #E0DDD7;
   max-width: 640px;
   margin: auto;
 }
@@ -27,7 +28,7 @@ h2 {
 /* Labels */
 label {
   font-weight: 600;
-  font-family: 'Open Sans';
+  font-family: 'Arial', serif;
   font-size: 1rem;
   margin-top: 1em;
   margin-bottom: 0.4em;
@@ -223,4 +224,103 @@ input[type=number] {
 .amortization-table th {
   background-color: #f0f0f0;
   text-align: center;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: max-content;
+  max-width: 250px;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 0.85em;
+  line-height: 1.4;
+
+  position: absolute;
+  z-index: 99;
+  bottom: 125%; /* Show above the element */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Mobile-friendly improvements */
+@media (max-width: 480px) {
+  body {
+    padding: 1em;
+  }
+
+  #calculator_container {
+    padding: 1.5em;
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  .inputs-row {
+    flex-direction: column;
+    gap: 1em;
+  }
+
+  .input-group {
+    width: 100%;
+  }
+
+  #serviceOptions,
+  #termButtons {
+    flex-direction: column;
+  }
+
+  #serviceOptions button,
+  #termButtons button {
+    width: 100%;
+    margin: 0 0 0.8em 0;
+    padding: 1em 0;
+    font-size: 1rem;
+    border-radius: 10px;
+  }
+
+  button {
+    font-size: 1.1rem;
+    padding: 1em;
+  }
+
+  /* Make currency symbol smaller and reposition on small screens */
+  .currency-symbol {
+    left: 8px;
+    font-size: 0.9rem;
+  }
+
+  input[type="number"] {
+    font-size: 1.1rem;
+    height: 2.8em;
+  }
+
+  #resultBox {
+    flex-direction: column;
+  }
+
+  .summary-section,
+  .output-section {
+    flex: 1 1 100%;
+    margin-bottom: 1.5em;
+  }
+
+  #calculator_container #exampleBox {
+    padding: 1em;
+    font-size: 0.9rem;
+  }
 }
