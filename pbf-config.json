@@ -1,0 +1,37 @@
+{
+  "limits": {
+    "minLoan": 3000,
+    "maxLoan": 25000,
+    "minDeposit": 10,
+    "maxDeposit": 50
+  },
+  "services": {
+    "Interest Free": {
+      "apr": 0,
+      "depositPercent": 10,
+      "terms": {
+        "12": {},
+        "24": {},
+        "36": {},
+        "84": {
+          "minDepositOverride": 30
+        }
+      }
+    },
+    "Interest Bearing": {
+      "apr": 6.9,
+      "depositPercent": 10,
+      "terms": {
+        "72": {},
+        "120": {}
+      }
+    },
+    "BNPL": {
+      "apr": 6.9,
+      "terms": {
+        "72": {}
+      },
+      "deferralterms": ["72"]
+    }
+  }
+}
