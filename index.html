@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <title>FinanceWorks Loan Calculator</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/decimal.js/decimal.min.js"></script>
 </head>
 <body>
   <div id="calculator_container"></div>
-  <script src="js/pbf-calculator.js"></script>
+  <script src="pbf-calculator.js"></script>
   <script>
     financeCalculator({
       target: "#calculator_container",
-      config: "pbf-config.json",
+      config: "config.json",
       labels: {
         service: "Select Finance Service",
         term: "Select Repayment Term",
