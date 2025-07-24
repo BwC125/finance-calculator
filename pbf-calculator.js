@@ -6,7 +6,7 @@ function financeCalculator(options) {
         const container = document.querySelector(options.target);
         let selectedService = "Interest Free";
         let selectedTerm = 12;
-        let cashPrice = 3000;
+        let cashPrice = 0;
         let deposit = 0;
 
         container.innerHTML = `
