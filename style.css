@@ -2,7 +2,7 @@
 
 body {
   font-family: 'Open Sans', sans-serif;
-  background-color: transparent !important
+  background-color: transparent !important;
   padding: 2em;
 }
 
@@ -111,6 +111,12 @@ button:hover {
   outline: none;
 }
 
+/* Red error border */
+.input-error {
+  border: 2px solid red !important;
+  outline: none;
+}
+
 /* Currency Symbol */
 .currency-symbol {
   position: absolute;
@@ -178,9 +184,8 @@ input[type=number] {
   margin: 0.5em 0;
   font-weight: 500;
   color: #ffffff;
-
   display: flex;
-  justify-content: space-between;  /* Align text left, values right */
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -194,8 +199,8 @@ input[type=number] {
 
 #calculator_container #exampleBox {
   display: flex;
-  justify-content: center; /* horizontal center */
-  align-items: center;     /* vertical center */
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
   background-color: #131C2C;
   color: #fff;
@@ -231,29 +236,47 @@ input[type=number] {
 
 .tooltip {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   cursor: help;
+}
+
+.tooltip-icon {
+  margin-left: 6px;
+  color: #37FFFF;
+  font-weight: bold;
+  font-size: 0.9em;
+  cursor: help;
+  transition: color 0.3s ease;
+}
+
+.tooltip:hover .tooltip-icon {
+  color: #4cc4fc;
 }
 
 .tooltip .tooltip-text {
   visibility: hidden;
   width: max-content;
-  max-width: 250px;
-  background-color: #333;
+  max-width: 260px;
+  background: linear-gradient(145deg, #2a2f4a, #1a1f3a);
   color: #fff;
   text-align: left;
-  padding: 6px 10px;
-  border-radius: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
   font-size: 0.85em;
-  line-height: 1.4;
+  line-height: 1.5;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
 
   position: absolute;
   z-index: 99;
-  bottom: 125%; /* Show above the element */
+  bottom: 125%;
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
   transition: opacity 0.3s ease;
+  white-space: normal;
+  pointer-events: none;
 }
 
 .tooltip:hover .tooltip-text {
@@ -301,7 +324,6 @@ input[type=number] {
     padding: 1em;
   }
 
-  /* Make currency symbol smaller and reposition on small screens */
   .currency-symbol {
     left: 8px;
     font-size: 0.9rem;
