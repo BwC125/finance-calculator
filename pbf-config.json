@@ -22,8 +22,12 @@
       "apr": 6.9,
       "depositPercent": 10,
       "terms": {
-        "72": {},
-        "120": {}
+        "72": {
+          "monthlyPerThousand": 17.04
+        },
+        "120": {
+          "monthlyPerThousand": 11.45
+        }
       }
     },
     "BNPL": {
