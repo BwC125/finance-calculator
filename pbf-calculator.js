@@ -56,6 +56,11 @@ function financeCalculator(options) {
           </style>
 
           <h2>${options.labels.results}</h2>
+          <div class="calculator-disclaimer">
+          <span class="disclaimer-icon">ⓘ</span>
+          This calculator provides indicative figures for illustration purposes only. Actual rates, terms, and repayments may vary depending on the lender’s assessment and final offer.
+          </div>
+
           <div class="inputs-row">
             <div class="input-group">
               <label for="cashInput" class="tooltip">
@@ -90,7 +95,17 @@ function financeCalculator(options) {
           <div id="termButtons"></div>
 
           <div id="resultBox"></div>
-          <div id="exampleBox"></div>
+          <div id="exampleBox">
+          <div class="example-heading">Representative Example</div>
+          <div class="example-heading">
+          Representative Example
+          <span class="example-badge">Example</span>
+          </div>
+          <p>If you purchase goods costing <strong>£3,000.00</strong> and pay a <strong>£300.00</strong> deposit, the amount of credit will be <strong>£2,700.00</strong>.</p>
+          <p>You will repay this over <strong>120 months</strong> at an interest rate of <strong>6.9%</strong> per annum (fixed).</p>
+          <p>The total charge for credit will be <strong>£1,011.60</strong>.</p>
+          <p>Overall amount repayable: <strong>£4,011.60</strong>, in monthly repayments of <strong>£30.93</strong>.</p>
+          </div>
         `;
 
         const serviceOptions = container.querySelector("#serviceOptions");
@@ -140,81 +155,109 @@ function financeCalculator(options) {
           return minDepositValue;
         }
 
-        function render() {
-          const serviceConfig = config.services[selectedService];
-          const apr = new Decimal(serviceConfig.apr || 0);
-          const loanAmount = new Decimal(cashPrice).minus(deposit);
+function render() {
+  const serviceConfig = config.services[selectedService];
+  const apr = new Decimal(serviceConfig.apr || 0);
+  const loanAmount = new Decimal(cashPrice).minus(deposit);
 
-          if (loanAmount.lte(0)) {
-            resultBox.innerHTML = `<p style="color:red;">Loan amount must be positive.</p>`;
-            exampleBox.innerHTML = "";
-            return;
-          }
+  if (loanAmount.lte(0)) {
+    resultBox.innerHTML = `<p style="color:red;">Loan amount must be positive.</p>`;
+    exampleBox.innerHTML = "";
+    return;
+  }
 
-          const monthlyRate = apr.div(100).div(12);
-          let repaymentMonths, deferralMonths;
-          let repaymentDisplayMonths = selectedTerm;
+  const monthlyRate = apr.div(100).div(12);
+  let repaymentMonths, deferralMonths;
+  let repaymentDisplayMonths = selectedTerm;
 
-          if (selectedService === "BNPL" && Array.isArray(serviceConfig.deferralterms) && serviceConfig.deferralterms.includes(String(selectedTerm))) {
-            deferralMonths = 12;
-            repaymentMonths = new Decimal(selectedTerm).minus(deferralMonths);
-            repaymentDisplayMonths = repaymentMonths.toNumber();
-          } else {
-            repaymentMonths = new Decimal(selectedTerm);
-          }
+  if (
+    selectedService === "BNPL" &&
+    Array.isArray(serviceConfig.deferralterms) &&
+    serviceConfig.deferralterms.includes(String(selectedTerm))
+  ) {
+    deferralMonths = 12;
+    repaymentMonths = new Decimal(selectedTerm).minus(deferralMonths);
+    repaymentDisplayMonths = repaymentMonths.toNumber();
+  } else {
+    repaymentMonths = new Decimal(selectedTerm);
+  }
 
-          let monthlyInstalment, totalPayable, interestPayable;
+  const termConfig = serviceConfig.terms?.[selectedTerm];
+  const fixedMonthlyRate = termConfig?.monthlyPerThousand;
 
-          if (selectedService === "BNPL" && deferralMonths) {
-            const deferredInterest = loanAmount.times(monthlyRate.plus(1).pow(deferralMonths).minus(1));
-            const adjustedLoanAmount = loanAmount.plus(deferredInterest);
-            monthlyInstalment = adjustedLoanAmount.times(monthlyRate.div(monthlyRate.plus(1).pow(-repaymentMonths).minus(1).neg()));
-            totalPayable = new Decimal(deposit).plus(monthlyInstalment.times(repaymentMonths));
-            interestPayable = totalPayable.minus(cashPrice);
-          } else if (apr.equals(0)) {
-            monthlyInstalment = loanAmount.div(selectedTerm);
-            totalPayable = new Decimal(deposit).plus(loanAmount);
-            interestPayable = new Decimal(0);
-          } else {
-            const n = selectedTerm;
-            const r = monthlyRate;
-            monthlyInstalment = loanAmount.times(r.div(new Decimal(1).minus(new Decimal(1).plus(r).pow(-n))));
-            totalPayable = new Decimal(deposit).plus(monthlyInstalment.times(n));
-            interestPayable = totalPayable.minus(cashPrice);
-          }
+  let monthlyInstalment, totalPayable, interestPayable;
 
-          resultBox.innerHTML = `
-            <div class="summary-section">
-              <h3>Finance Details</h3>
-              <p><strong>Total cost of goods:</strong> <span id="cashPrice">£0.00</span></p>
-              <p><strong>Deposit:</strong> <span id="deposit">£0</span></p>
-              <p><strong>Amount borrowed:</strong> <span id="loanAmount">£0.00</span></p>
-              <p><strong>Repaid over:</strong> ${repaymentDisplayMonths} months</p>
-              ${deferralMonths ? `<p><strong>Deferral period:</strong> ${deferralMonths} months</p>` : ''}
-              <p><strong>Interest rate:</strong> ${apr.toString()}%</p>
-              <p><strong>Representative APR:</strong> ${apr.toString()}% APR</p>
-            </div>
-            <div class="output-section">
-              <h3>Monthly & Total Repayments</h3>
-              <p><strong>Interest payable:</strong> <span id="interestPayable">£0.00</span></p>
-              <p><strong>Total payable:</strong> <span id="totalPayable">£0.00</span></p>
-              <p><strong>Monthly repayment:</strong> <span id="monthlyRepayment">£0.00</span></p>
-            </div>
-          `;
+  if (fixedMonthlyRate) {
+    // 🔷 Fixed monthly repayment per £1,000
+    monthlyInstalment = loanAmount.div(1000).times(fixedMonthlyRate);
+    totalPayable = new Decimal(deposit).plus(monthlyInstalment.times(selectedTerm));
+    interestPayable = totalPayable.minus(cashPrice);
+  } else if (selectedService === "BNPL" && deferralMonths) {
+    // 🔷 BNPL deferral logic
+    const deferredInterest = loanAmount.times(monthlyRate.plus(1).pow(deferralMonths).minus(1));
+    const adjustedLoanAmount = loanAmount.plus(deferredInterest);
+    monthlyInstalment = adjustedLoanAmount.times(
+      monthlyRate.div(monthlyRate.plus(1).pow(-repaymentMonths).minus(1).neg())
+    );
+    totalPayable = new Decimal(deposit).plus(monthlyInstalment.times(repaymentMonths));
+    interestPayable = totalPayable.minus(cashPrice);
+  } else if (apr.equals(0)) {
+    // 🔷 Interest-Free logic
+    monthlyInstalment = loanAmount.div(selectedTerm);
+    totalPayable = new Decimal(deposit).plus(loanAmount);
+    interestPayable = new Decimal(0);
+  } else {
+    // 🔷 APR-based fallback
+    const n = selectedTerm;
+    const r = monthlyRate;
+    monthlyInstalment = loanAmount.times(
+      r.div(new Decimal(1).minus(new Decimal(1).plus(r).pow(-n)))
+    );
+    totalPayable = new Decimal(deposit).plus(monthlyInstalment.times(n));
+    interestPayable = totalPayable.minus(cashPrice);
+  }
 
-          animateCount(resultBox.querySelector("#cashPrice"), 0, cashPrice);
-          animateCount(resultBox.querySelector("#deposit"), 0, deposit);
-          animateCount(resultBox.querySelector("#loanAmount"), 0, loanAmount);
-          animateCount(resultBox.querySelector("#interestPayable"), 0, interestPayable);
-          animateCount(resultBox.querySelector("#totalPayable"), 0, totalPayable);
-          animateCount(resultBox.querySelector("#monthlyRepayment"), 0, monthlyInstalment);
+  resultBox.innerHTML = `
+    <div class="summary-section">
+      <h3>Finance Details</h3>
+      <p><strong>Total cost of goods:</strong> <span id="cashPrice">£0.00</span></p>
+      <p><strong>Deposit:</strong> <span id="deposit">£0</span></p>
+      <p><strong>Amount borrowed:</strong> <span id="loanAmount">£0.00</span></p>
+      <p><strong>Repaid over:</strong> ${repaymentDisplayMonths} months</p>
+      ${deferralMonths ? `<p><strong>Deferral period:</strong> ${deferralMonths} months</p>` : ""}
+      <p><strong>Interest rate:</strong> ${apr.toString()}%</p>
+      <p><strong>Representative APR:</strong> ${apr.toString()}% APR</p>
+    </div>
+    <div class="output-section">
+      <h3>Monthly & Total Repayments</h3>
+      <p><strong>Interest payable:</strong> <span id="interestPayable">£0.00</span></p>
+      <p><strong>Total payable:</strong> <span id="totalPayable">£0.00</span></p>
+      <p><strong>Monthly repayment:</strong> <span id="monthlyRepayment">£0.00</span></p>
+    </div>
+  `;
 
-          exampleBox.innerHTML = `
-            <strong>Representative Example:</strong><br>
-            Borrowing £${loanAmount.toDecimalPlaces(2)} over ${selectedTerm} months at an interest rate of ${apr.toString()}% APR,<br>
-            your monthly repayments will be £${monthlyInstalment.toDecimalPlaces(2)} and total amount payable £${totalPayable.toDecimalPlaces(2)}.
-          `;
-        }
+  animateCount(resultBox.querySelector("#cashPrice"), 0, cashPrice);
+  animateCount(resultBox.querySelector("#deposit"), 0, deposit);
+  animateCount(resultBox.querySelector("#loanAmount"), 0, loanAmount);
+  animateCount(resultBox.querySelector("#interestPayable"), 0, interestPayable);
+  animateCount(resultBox.querySelector("#totalPayable"), 0, totalPayable);
+  animateCount(resultBox.querySelector("#monthlyRepayment"), 0, monthlyInstalment);
+
+  exampleBox.innerHTML = `
+  <div class="rep-example-card">
+    <div class="rep-example-header">
+      <span class="rep-badge">Representative Example</span>
+    </div>
+    <div class="rep-example-content">
+      <p>If you purchase goods costing <strong>£${cashPrice.toFixed(2)}</strong> and pay a <strong>£${deposit.toFixed(2)}</strong> deposit, the amount of credit will be <strong>£${loanAmount.toFixed(2)}</strong>.</p>
+      <p>You will repay this over <strong>${selectedTerm} months</strong> at an interest rate of <strong>${apr.toFixed(1)}%</strong> per annum (fixed).</p>
+      <p>The total charge for credit will be <strong>£${interestPayable.toFixed(2)}</strong>.</p>
+      <p>Overall amount repayable: <strong>£${totalPayable.toFixed(2)}</strong>, in monthly repayments of <strong>£${monthlyInstalment.toFixed(2)}</strong>.</p>
+    </div>
+  </div>
+`;
+}
+
 
         function buildServiceOptions() {
           serviceOptions.innerHTML = "";
